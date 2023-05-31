@@ -33,19 +33,19 @@ fi
 echo "Packages and dependencies downloaded"
 # Starts the libvirtd service
 echo "Starting libvirtd..."
-if command -v systemctl >/dev/null then # Systemd
+if command -v systemctl >/dev/null; then # Systemd
 	sudo systemctl start libvirtd
 	sudo systemctl enable libvirtd
-elif command -v rc-status >/dev/null then #OpenRC
+elif command -v rc-status >/dev/null; then #OpenRC
 	sudo rc-update add libvirtd
 	sudo rc-service libvirtd start
-elif command -v sv >/dev/null then #Runit
+elif command -v sv >/dev/null; then #Runit
 	sudo sv up libvirtd
 	sudo ln -s /etc/sv/libvirtd /etc/runit/runsvdir/default/
-elif command -v dinitctl >/dev/null then #Dinit
+elif command -v dinitctl >/dev/null; then #Dinit
 	sudo dinitctl start libvirtd
 	sudo dinitctl enable libvirtd
-elif command -v s6-rc >/dev/null then #s6
+elif command -v s6-rc >/dev/null; then #s6
 	sudo s6-rc -u change libvirtd
 	sudo s6-rc-bundle-update add default libvirtd
 else
