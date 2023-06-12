@@ -1,17 +1,16 @@
 set -e
 #Downloads KVM, QEMU, Virt-manager, and all its dependencies
 echo "Downloading dependencies"
-if command -v apt-get >/dev/null; then #Debian/Ubuntu
-	sudo apt-get update
-	sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager
-elif command -v pacman >/dev/null; then #Arch
+if command -v pacman >/dev/null; then #Arch
 	sudo pacman -Syy
 	sudo pacman -S qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat libguestfs
+elif command -v apt-get >/dev/null; then #Debian/Ubuntu
+	sudo apt-get update
+	sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager
 elif command -v dnf >/dev/null; then #Fedora
 	sudo dnf update
 	sudo dnf install -y qemu-kvm libvirt libvirt-client virt-install virt-manager
 elif command -v yum >/dev/null; then #Red Hat/Cent OS
-	echo "WARNING: Untested Distro!"
 	sudo yum update
 	sudo yum install -y qemu-kvm libvirt libvirt-client virt-install virt-manager
 elif command -v emerge >/dev/null; then #Gentoo
@@ -23,12 +22,25 @@ elif command -v xbps-install >/dev/null; then #Void Linux
 	sudo xbps-install -S
 	sudo xbps-install qemu libvirt virt-manager bridge-utils dnsmasq netcat libguestfs
 elif command -v nix-env >/dev/null; then #NixOS
-	echo "WARNING: Untested Distro!"
 	sudo nix-channel --update
 	sudo nix-env -i qemu libvirt virt-manager bridge-utils dnsmasq netcat-openbsd libguestfs
 else
 	echo "Unsupported distro"
 	exit 1
+fi
+#Checks if the user is running Artix Linux, then downloads extra
+#dependencies based on the init system that is currently used
+if [[ -f "/etc/artix-release" ]]; then #Artix
+if command -v rc-status >/dev/null; then #OpenRC
+	sudo pacman -S libvirt-openrc
+elif command -v sv >/dev/null; then #Runit
+	sudo pacman -S libvirt-runit
+elif command -v dinitctl >/dev/null; then #Dinit
+	sudo pacman -S libvirt-dinit
+elif command -v s6-rc >/dev/null; then #s6
+	sudo pacman -S libvirt-s6
+else
+	echo " "
 fi
 echo "Packages and dependencies downloaded"
 # Starts the libvirtd service
