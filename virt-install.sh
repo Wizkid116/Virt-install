@@ -11,6 +11,7 @@ elif command -v dnf >/dev/null; then #Fedora
 	sudo dnf update
 	sudo dnf install -y qemu-kvm libvirt libvirt-client virt-install virt-manager
 elif command -v yum >/dev/null; then #Red Hat/Cent OS
+	echo "WARNING: Untested Distro!"
 	sudo yum update
 	sudo yum install -y qemu-kvm libvirt libvirt-client virt-install virt-manager
 elif command -v emerge >/dev/null; then #Gentoo
@@ -22,6 +23,7 @@ elif command -v xbps-install >/dev/null; then #Void Linux
 	sudo xbps-install -S
 	sudo xbps-install qemu libvirt virt-manager bridge-utils dnsmasq netcat libguestfs
 elif command -v nix-env >/dev/null; then #NixOS
+	echo "WARNING: Untested Distro!"
 	sudo nix-channel --update
 	sudo nix-env -i qemu libvirt virt-manager bridge-utils dnsmasq netcat-openbsd libguestfs
 else
@@ -46,6 +48,9 @@ elif command -v dinitctl >/dev/null; then #Dinit
 elif command -v s6-rc >/dev/null; then #s6
 	sudo s6-rc -u change libvirtd
 	sudo s6-rc-bundle-update add default libvirtd
+elif command -v sysv-rc-conf >/dev/null; then #sysVinit
+	sudo sysv-rc-conf libvirtd on
+	sudo service libvirtd start
 else
 	echo "Unsupported init system"
 	exit 2
