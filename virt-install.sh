@@ -1,5 +1,20 @@
+#!/bin/bash
 set -e
-#Downloads KVM, QEMU, Virt-manager, and all its dependencies
+sudo -v
+#fix for Artix Runit systems (see issue #2)
+artix_runit_fix=("sudo ln -s /etc/runit/sv/libvirtd /run/runit/service"
+	"sudo ln -s /etc/runit/sv/virtlogd /run/runit/service"
+	"sudo ln -s /etc/runit/sv/virtlockd /run/runit/service"
+	"sudo sv up libvirtd"
+	"sudo sv up virtlogd"
+	"sudo sv up virtlockd"
+	"sudo sed -i 's/#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/g' /etc/libvirt/libvirtd.conf"
+	"sudo sed -i 's/#unix_sock_ro_perms = "0777"/unix_sock_ro_perms = "0777"/g' /etc/libvirt/libvirtd.conf"
+	"sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/g' /etc/libvirt/libvirtd.conf"
+	"sudo usermod -aG libvirt $USER"
+	"echo "Installation complete, restart your system for changes to take effect.""
+)
+#Downloads KVM, QEMU, Virt-manager, all its dependencies, and a few other tools.
 echo "Downloading dependencies"
 if command -v pacman >/dev/null; then #Arch
 	sudo pacman -Syy
@@ -35,6 +50,8 @@ if command -v rc-status >/dev/null; then #OpenRC
 	sudo pacman -S libvirt-openrc
 elif command -v sv >/dev/null; then #Runit
 	sudo pacman -S libvirt-runit
+	eval "${artix_runit_fix[@]}"
+	exit 0
 elif command -v dinitctl >/dev/null; then #Dinit
 	sudo pacman -S libvirt-dinit
 elif command -v s6-rc >/dev/null; then #s6
@@ -52,8 +69,8 @@ elif command -v rc-status >/dev/null; then #OpenRC
 	sudo rc-update add libvirtd
 	sudo rc-service libvirtd start
 elif command -v sv >/dev/null; then #Runit
-	sudo sv up libvirtd
 	sudo ln -s /etc/sv/libvirtd /etc/runit/runsvdir/default/
+	sudo sv up libvirtd
 elif command -v dinitctl >/dev/null; then #Dinit
 	sudo dinitctl start libvirtd
 	sudo dinitctl enable libvirtd
@@ -70,9 +87,13 @@ fi
 echo "Libvirtd started"
 # Edits permissions in the libvirtd.conf file
 echo "Editing config..."
-sudo awk '/^#.*unix_sock_group/{sub(/^#/,"",$0)}1' /etc/libvirt/libvirtd.conf > temp && sudo mv temp /etc/libvirt/libvirtd.conf
-sudo awk '/^#.*unix_sock_ro_perms/{sub(/^#/,"",$0)}1' /etc/libvirt/libvirtd.conf > temp && sudo mv temp /etc/libvirt/libvirtd.conf
-sudo awk '/^#.*unix_sock_rw_perms/{sub(/^#/,"",$0)}1' /etc/libvirt/libvirtd.conf > temp && sudo mv temp /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/g' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#unix_sock_ro_perms = "0777"/unix_sock_ro_perms = "0777"/g' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/g' /etc/libvirt/libvirtd.conf
+#comment out the above 3 lines and uncomment the 3 lines below in case it ends up not working
+#sudo awk '/^#.*unix_sock_group/{sub(/^#/,"",$0)}1' /etc/libvirt/libvirtd.conf > temp && sudo mv temp /etc/libvirt/libvirtd.conf
+#sudo awk '/^#.*unix_sock_ro_perms/{sub(/^#/,"",$0)}1' /etc/libvirt/libvirtd.conf > temp && sudo mv temp /etc/libvirt/libvirtd.conf
+#sudo awk '/^#.*unix_sock_rw_perms/{sub(/^#/,"",$0)}1' /etc/libvirt/libvirtd.conf > temp && sudo mv temp /etc/libvirt/libvirtd.conf
 # Adds current user to the libvirt group
 sudo usermod -aG libvirt $USER
 echo "Installation complete, restart your system for changes to take effect."
