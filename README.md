@@ -21,7 +21,9 @@ Q. Garuda Linux already configures Virt Manager out of the box, why don't you ju
 
 A. Shut up :`(
 
+Q. Why is the code so horrible?
 
+A. Yes I know I suck at shell scripting. And hey, if it's so crap, why don't you fix it yourself? Oh wait, you can with a commit!
 
 # Things left to do
 1. Automatically detect what init system the user is running, to add support for other init systems like OpenRC, Runit, etc.
