@@ -24,6 +24,7 @@ A. Shut up :`(
 Q. Why is the code so horrible?
 
 A. Yes I know I suck at shell scripting. And hey, if it's so crap, why don't you fix it yourself? Oh wait, you can with a commit!
+Joking aside, I do want to make this script the best it can be to the best of my abilities. As of the time of writing, I ideally want the script to not exceed 100 SLOC, with the exception of adding support for other distros.
 
 ## Things left to do
 1. Automatically detect what init system the user is running, to add support for other init systems like OpenRC, Runit, etc.
