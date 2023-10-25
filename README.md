@@ -7,6 +7,7 @@ cd Virt-install
 ./virt-install.sh
 #Run the below command if it fails to run
 sudo chmod +x virt-install.sh
+>>>>>>> main
 ```
 ## FAQ
 Q. Why does this script exist?
