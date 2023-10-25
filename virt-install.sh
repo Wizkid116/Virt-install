@@ -1,4 +1,5 @@
 #!/bin/bash
+#use set -n for debugging
 set -e
 sudo -v
 #Downloads KVM, QEMU, Virt-manager, all its dependencies, and a few other tools.
@@ -34,12 +35,13 @@ fi
 #Checks if the user is running Artix Linux, then downloads extra
 #dependencies based on the init system that is currently used
 if [[ -f "/etc/artix-release" ]]; then #Artix
-if command -v rc-status >/dev/null; then #OpenRC
-	sudo pacman -S libvirt-openrc
-elif command -v dinitctl >/dev/null; then #Dinit
-	sudo pacman -S libvirt-dinit
-elif command -v s6-rc >/dev/null; then #s6
-	sudo pacman -S libvirt-s6
+	if command -v rc-status >/dev/null; then #OpenRC
+		sudo pacman -S libvirt-openrc
+	elif command -v dinitctl >/dev/null; then #Dinit
+		sudo pacman -S libvirt-dinit
+	elif command -v s6-rc >/dev/null; then #s6
+		sudo pacman -S libvirt-s6
+	fi
 fi
 echo "Packages and dependencies downloaded"
 # Starts the libvirtd service
@@ -84,4 +86,5 @@ sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/g' /etc/
 # Adds current user to the libvirt group
 sudo usermod -aG libvirt $USER
 echo "Installation complete, restart your system for changes to take effect."
-exit 0
+echo "test"
+exit
