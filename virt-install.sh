@@ -87,4 +87,4 @@ sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/g' /etc/
 sudo usermod -aG libvirt $USER
 echo "Installation complete, restart your system for changes to take effect."
 echo "test"
-exit
+exit 0
