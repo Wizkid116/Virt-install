@@ -23,6 +23,10 @@ elif command -v xbps-install >/dev/null; then #Void Linux
 elif command -v nix-env >/dev/null; then #NixOS
 	sudo nix-channel --update
 	sudo nix-env -i qemu libvirt virt-manager bridge-utils dnsmasq netcat-openbsd libguestfs
+elif command -v apk >/dev/null; then #Alpine
+	echo "WARNING: Untested Distro!"
+	sudo apk update
+	sudo apk add qemu virt-manager libvirt virt-viewer bridge-utils dnsmasq libguestfs virt-install
 else
 	echo "Unsupported distro"
 	exit 1
@@ -36,8 +40,6 @@ elif command -v dinitctl >/dev/null; then #Dinit
 	sudo pacman -S libvirt-dinit
 elif command -v s6-rc >/dev/null; then #s6
 	sudo pacman -S libvirt-s6
-else
-	echo " "
 fi
 echo "Packages and dependencies downloaded"
 # Starts the libvirtd service
@@ -49,7 +51,7 @@ elif command -v rc-status >/dev/null; then #OpenRC
 	sudo rc-update add libvirtd
 	sudo rc-service libvirtd start
 elif command -v sv >/dev/null; then #Runit
-	if [[ -f "/etc/artix-release" ]]; then #Artix-Runit
+	if [[ -f "/etc/artix-release" ]]; then #Artix-Runit fix
 		sudo ln -s /etc/runit/sv/libvirtd /run/runit/service
 		sudo ln -s /etc/runit/sv/virtlogd /run/runit/service
 		sudo ln -s /etc/runit/sv/virtlockd /run/runit/service
@@ -59,7 +61,7 @@ elif command -v sv >/dev/null; then #Runit
 	else
 		sudo ln -s /etc/sv/libvirtd /etc/runit/runsvdir/default/
 		sudo sv up libvirtd
-	fi #This whole section is untested and is intended to fix issue #2
+	fi 
 elif command -v dinitctl >/dev/null; then #Dinit
 	sudo dinitctl start libvirtd
 	sudo dinitctl enable libvirtd
@@ -79,7 +81,6 @@ echo "Editing config..."
 sudo sed -i 's/#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/g' /etc/libvirt/libvirtd.conf
 sudo sed -i 's/#unix_sock_ro_perms = "0777"/unix_sock_ro_perms = "0777"/g' /etc/libvirt/libvirtd.conf
 sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/g' /etc/libvirt/libvirtd.conf
-#comment out the above 3 lines and uncomment the 3 lines below in case it ends up not working
 # Adds current user to the libvirt group
 sudo usermod -aG libvirt $USER
 echo "Installation complete, restart your system for changes to take effect."
