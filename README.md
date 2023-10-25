@@ -1,5 +1,5 @@
 # Virt-Install
-This is a very simple shell script used to automatically install and configure KVM/QEMU & Virt-Manager on most Arch, Debian, and Fedora based distros.
+This is a shell script used to automatically install and configure KVM/QEMU & Virt-Manager on most mainstream Linux distros.
 ## Installation
 ```bash
 git clone https://github.com/Wizkid116/Virt-install.git
@@ -27,6 +27,5 @@ A. Yes I know I suck at shell scripting. And hey, if it's so crap, why don't you
 Joking aside, I do want to make this script the best it can be to the best of my abilities. As of the time of writing, I ideally want the script to not exceed 100 SLOC, with the exception of adding support for other distros.
 
 ## Things left to do
-1. Automatically detect what init system the user is running, to add support for other init systems like OpenRC, Runit, etc.
-2. Clean up the code and fix any bugs.
-3. Add support for even more distros, like RedHat, OpenSuse, Nixos, Void, Gentoo, etc.
+1. Clean up the code and fix any bugs.
+2. Add support for even more distros.
