@@ -17,6 +17,10 @@ elif command -v emerge >/dev/null; then #Gentoo
 	echo "WARNING: Untested Distro!"
 	sudo emerge --sync
 	sudo emerge app-emulation/qemu app-emulation/libvirt app-emulation/virt-manager net-misc/bridge-utils net-analyzer/openbsd-netcat app-emulation/libguestfs
+elif command -v zypper >/dev/null; then #OpenSUSE
+	echo "WARNING: Untested Distro!"
+	sudo zypper update -y
+	sudo zypper install -y qemu-kvm libvirt libvirt-client virt-install virt-manager 
 elif command -v xbps-install >/dev/null; then #Void Linux
 	echo "WARNING: Untested Distro!"
 	sudo xbps-install -S
@@ -86,5 +90,4 @@ sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/g' /etc/
 # Adds current user to the libvirt group
 sudo usermod -aG libvirt $USER
 echo "Installation complete, restart your system for changes to take effect."
-echo "test"
 exit 0
