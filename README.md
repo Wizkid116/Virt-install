@@ -27,5 +27,11 @@ A. Yes I know I suck at shell scripting. And hey, if it's so crap, why don't you
 Joking aside, I do want to make this script the best it can be to the best of my abilities. As of the time of writing, I ideally want the script to not exceed 100 SLOC, with the exception of adding support for other distros.
 
 ## Things left to do
-1. Clean up the code and fix any bugs.
-2. Add support for even more distros.
+* Clean up the code and fix any bugs.
+* Add support for even more distros.
+
+## Donate
+If you like my silly little project, then chuck me some Monero:
+```
+46FgbLQXEFPbsZzzpF1ecQ7BrQc4YXjiF6pNv8sWjfg2Ri9LkPoEWspFxPwu7US19hXMP4mWrEwwzSPQzZaGZ9eM4iRPf82
+```
